@@ -24,8 +24,8 @@ module ActiveModelFlorder
     end
 
     def move(position)
-      raise OrderableError, "Position param is required" unless position
-      raise OrderableError, "Position should be > 0" unless (normalized_position = normalize_position(position)) > 0
+      raise ActiveModelFlorder::Error, "Position param is required" unless position
+      raise ActiveModelFlorder::Error, "Position should be > 0" unless (normalized_position = normalize_position(position)) > 0
       position_conflict_solver(position, normalized_position)
 
       if new_record?
