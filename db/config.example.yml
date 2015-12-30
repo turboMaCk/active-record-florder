@@ -1,0 +1,7 @@
+development:
+  adapter: sqlite3
+  database: active-model-florder_dev
+
+test:
+  adapter: sqlite3
+  database: active-model-florder_test
