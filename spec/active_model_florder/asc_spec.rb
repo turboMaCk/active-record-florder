@@ -2,11 +2,12 @@ require 'spec_helper'
 
 RSpec.describe ActiveModelFlorder::ASC do
   let(:owner) { Owner.create }
-  let(:create_subject) {
-        lambda {
-          ASCMovable.create(owner: owner)
-        }
-      }
+
+  def create_subject
+    lambda {
+      ASCMovable.create(owner: owner)
+    }
+  end
 
   let!(:subject_1) { create_subject.call }
   let!(:subject_2) { create_subject.call }
@@ -14,25 +15,23 @@ RSpec.describe ActiveModelFlorder::ASC do
   let(:step_config) { subject_1.class::MIN_POSITION_DELTA }
 
   def fetch_ordered
-    # models are sorted in DESCnding order of position attribute
-    # look at the source code for more description
     subject_1.class.where(owner: owner).ordered
   end
 
-  it "Should be sorted in DESCending order" do
+  it "Should be sorted in ASCending order" do
     subject_1.reload
     subject_2.reload
     subject_3.reload
 
     results = fetch_ordered
-    expect(results.first.position > results.last.position).to be_truthy
+    expect(results.first.position < results.last.position).to be_truthy
   end
 
   context "when create a new item" do
     let!(:subject_4) { create_subject.call }
 
-    it "should be positioned as first" do
-      expect(fetch_ordered).to eq [subject_4, subject_3, subject_2, subject_1]
+    it "should be positioned as last" do
+      expect(fetch_ordered).to eq [subject_1, subject_2, subject_3, subject_4]
     end
   end
 
@@ -67,11 +66,11 @@ RSpec.describe ActiveModelFlorder::ASC do
       end
 
       it "return correct order" do
-        expect(fetch_ordered).to eq [subject_1, subject_3, subject_2]
+        expect(fetch_ordered).to eq [subject_2, subject_3, subject_1]
       end
 
       it "correct positions to not be in MIN_POSITION_DELTA range" do
-        expect(fetch_ordered.first.position - fetch_ordered.last.position < step_config*2).to be_falsy
+        expect(fetch_ordered.last.position - fetch_ordered.first.position < step_config*2).to be_falsy
       end
     end
   end
@@ -85,35 +84,13 @@ RSpec.describe ActiveModelFlorder::ASC do
         subject_3.move(0.9)
       end
 
-      it "should ignore other users bookmarks" do
-        expect(fetch_ordered).to eq [subject_2, subject_3]
+      it "should be scoped bookmarks" do
+        expect(fetch_ordered).to eq [subject_3, subject_2]
         expect(subject_1.position).to eq(1)
         expect(subject_2.position).to eq(1)
       end
     end
   end
 
-  describe "protected methods" do
-    describe "#last" do
-      it "should move bookmark to first position" do
-        subject_1.move(1)
-        subject_2.move(0.5)
-        subject_3.move(1)
-        subject_3.send(:push, :last)
-
-        expect(fetch_ordered).to eq [subject_1, subject_2, subject_3]
-      end
-    end
-
-    describe "#first" do
-      it "move bookmark to first position" do
-        subject_1.move(3)
-        subject_2.move(2)
-        subject_3.move(1)
-        subject_3.send(:push, :first)
-
-        expect(fetch_ordered).to eq [subject_3, subject_1, subject_2]
-      end
-    end
-  end
+  include_examples 'errors'
 end

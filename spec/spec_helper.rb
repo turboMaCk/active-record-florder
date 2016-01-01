@@ -3,6 +3,7 @@ require 'active_model_florder'
 require 'active_record'
 require 'support/active_record'
 require 'support/models'
+require 'support/errors_test'
 require 'active_model_florder'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
@@ -52,6 +53,11 @@ RSpec.configure do |config|
     # a real object. This is generally recommended, and will default to
     # `true` in RSpec 4.
     mocks.verify_partial_doubles = true
+  end
+
+  config.after(:all) do
+    ASCMovable.destroy_all
+    Owner.destroy_all
   end
 
 # The settings below are suggested to provide a good initial experience

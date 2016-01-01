@@ -93,27 +93,5 @@ RSpec.describe ActiveModelFlorder::DESC do
     end
   end
 
-  describe "protected methods" do
-    describe "#last" do
-      it "should move bookmark to first position" do
-        subject_1.move(1)
-        subject_2.move(0.5)
-        subject_3.move(1)
-        subject_3.send(:push, :last)
-
-        expect(fetch_ordered).to eq [subject_1, subject_2, subject_3]
-      end
-    end
-
-    describe "#first" do
-      it "move bookmark to first position" do
-        subject_1.move(3)
-        subject_2.move(2)
-        subject_3.move(1)
-        subject_3.send(:push, :first)
-
-        expect(fetch_ordered).to eq [subject_3, subject_1, subject_2]
-      end
-    end
-  end
+  include_examples 'errors'
 end
