@@ -24,7 +24,6 @@ GEM
     builder (3.1.4)
     diff-lcs (1.2.5)
     i18n (0.7.0)
-    logger (1.2.8)
     minitest (4.7.5)
     multi_json (1.11.2)
     rainbow (2.0.0)
@@ -54,7 +53,6 @@ DEPENDENCIES
   activemodel
   activerecord (~> 4.0.0)
   activesupport (~> 4.0)
-  logger
   rake
   rspec
   sqlite3

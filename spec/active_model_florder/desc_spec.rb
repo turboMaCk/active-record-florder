@@ -1,29 +1,10 @@
-require 'rspec'
-require 'active_record'
-require 'active_model_florder'
+require 'spec_helper'
 
-# TODO: load from config
-ActiveRecord::Base.establish_connection(
-  adapter: 'sqlite3',
-  database: 'active-model-florder_test'
-)
-
-
-RSpec.describe ActiveModelFlorder::Base do
-  class Owner < ActiveRecord::Base
-    has_many :movables
-  end
-
-  class Movable < ActiveRecord::Base
-    include ActiveModelFlorder::Base
-
-    belongs_to :owner
-  end
-
+RSpec.describe ActiveModelFlorder::DESC do
   let(:owner) { Owner.create }
   let(:create_subject) {
         lambda {
-          Movable.create(owner: owner)
+          DESCMovable.create(owner: owner)
         }
       }
 
@@ -133,17 +114,6 @@ RSpec.describe ActiveModelFlorder::Base do
 
         expect(fetch_ordered).to eq [subject_3, subject_1, subject_2]
       end
-    end
-  end
-
-  describe "errors raising" do
-    context "when position param is missing" do
-      it { expect{ subject_1.move(nil) }.to raise_error(ActiveModelFlorder::Error) }
-    end
-
-    context "when position param is negative or 0" do
-      it { expect{ subject_1.move(-1) }.to raise_error(ActiveModelFlorder::Error) }
-      it { expect{ subject_1.move(0) }.to raise_error(ActiveModelFlorder::Error) }
     end
   end
 end

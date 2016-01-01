@@ -1,4 +1,4 @@
-require "active_support"
+require 'active_support'
 
 module ActiveModelFlorder
   module Base
@@ -74,23 +74,23 @@ module ActiveModelFlorder
       min = normalized_position - MIN_POSITION_DELTA
       max = normalized_position + MIN_POSITION_DELTA
 
-      conflicts = self.class.position_scope(scope_value).where("position > ? AND position < ?", min, max).where.not(id: id).order(:position)
+      conflicts = self.class.position_scope(scope_value).where("#{POSITION_ATTR_NAME.to_s} > ? AND #{POSITION_ATTR_NAME.to_s} < ?", min, max).where.not(id: id).order(:position)
 
       conflicts.each do |conflict|
-        conflict.slide(conflict.position > position ? :up : :down)
+        conflict.slide(conflict[POSITION_ATTR_NAME.to_sym] > position ? :up : :down)
       end
     end
 
     def get_sibling(place)
       conditions = case place
         when :up
-          [["#{POSITION_ATTR_NAME.to_s} > ?", position], "#{POSITION_ATTR_NAME.to_s} DESC"]
+          [["#{POSITION_ATTR_NAME.to_s} > ?", self[POSITION_ATTR_NAME.to_sym]], "#{POSITION_ATTR_NAME.to_s} DESC"]
         when :down
-          [["position < ?", position], "position ASC"]
+          [["#{POSITION_ATTR_NAME.to_s} < ?", self[POSITION_ATTR_NAME.to_sym]], "#{POSITION_ATTR_NAME.to_s} ASC"]
         when :first
-          [nil, "position DESC"]
+          [nil, "#{POSITION_ATTR_NAME.to_s} DESC"]
         when :last
-          [nil, "position ASC"]
+          [nil, "#{POSITION_ATTR_NAME.to_s} ASC"]
         else
           fail OrderableError, "Place param '#{place}' is not one of: up, down, first, last."
         end
