@@ -7,6 +7,7 @@ module ActiveModelFlorder
     MIN_POSITION_DELTA = 0.0005
     POSITION_SCOPE_ATTR = :owner_id
     NEXT_POSITION_STEP = 2**16
+    POSITION_ATTR_NAME = :position
 
     included do
       before_create do
@@ -14,7 +15,7 @@ module ActiveModelFlorder
       end
 
       # Models are sorted in DESCending order!
-      scope :ordered, -> { order("position DESC") }
+      scope :ordered, -> { order("#{POSITION_ATTR_NAME.to_s} DESC") }
 
       # scoped ordered items by POSITION_SCOPE_ATTR eg. user_id, folder_id ...
       scope :position_scope, -> (value) {
@@ -24,14 +25,16 @@ module ActiveModelFlorder
     end
 
     def move(position)
-      raise ActiveModelFlorder::Error, "Position param is required" unless position
-      raise ActiveModelFlorder::Error, "Position should be > 0" unless (normalized_position = normalize_position(position)) > 0
+      position.to_f
+
+      fail ActiveModelFlorder::Error, "Position param is required" unless position
+      fail ActiveModelFlorder::Error, "Position should be > 0" unless (normalized_position = normalize_position(position)) > 0
       position_conflict_solver(position, normalized_position)
 
       if new_record?
-        self.position = normalized_position
+        self[POSITION_ATTR_NAME.to_sym] = normalized_position
       else
-        update_attribute(:position,  normalized_position)
+        update_attribute(POSITION_ATTR_NAME.to_sym, normalized_position)
       end
 
       self
@@ -40,7 +43,7 @@ module ActiveModelFlorder
     protected
 
     def slide(direction)
-      sibling_position = get_sibling(direction).try(:position)
+      sibling_position = get_sibling(direction).try(POSITION_ATTR_NAME.to_sym)
 
       if sibling_position
         move((position + sibling_position) / 2.0)
@@ -54,7 +57,7 @@ module ActiveModelFlorder
     def push(place)
       return move(NEXT_POSITION_STEP) unless self.class.position_scope(scope_value).any?
 
-      sibling_position = get_sibling(place).try(:position)
+      sibling_position = get_sibling(place).try(POSITION_ATTR_NAME.to_sym)
 
       position = case place
       when :first
@@ -81,7 +84,7 @@ module ActiveModelFlorder
     def get_sibling(place)
       conditions = case place
         when :up
-          [["position > ?", position], "position DESC"]
+          [["#{POSITION_ATTR_NAME.to_s} > ?", position], "#{POSITION_ATTR_NAME.to_s} DESC"]
         when :down
           [["position < ?", position], "position ASC"]
         when :first
@@ -89,7 +92,7 @@ module ActiveModelFlorder
         when :last
           [nil, "position ASC"]
         else
-          raise OrderableError, "Place param '#{place}' is not one of: up, down, first, last."
+          fail OrderableError, "Place param '#{place}' is not one of: up, down, first, last."
         end
 
       self.class.position_scope(scope_value).where(conditions.first).order(conditions.last).limit(1).first
