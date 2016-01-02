@@ -4,6 +4,7 @@ require 'active_record'
 require 'support/active_record'
 require 'support/models'
 require 'support/errors_test'
+require 'support/base_test'
 require 'active_model_florder'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
@@ -55,7 +56,7 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-  config.after(:all) do
+  config.after(:each) do
     ASCMovable.destroy_all
     Owner.destroy_all
   end

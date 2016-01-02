@@ -93,4 +93,5 @@ RSpec.describe ActiveModelFlorder::ASC do
   end
 
   include_examples 'errors'
+  include_examples 'base'
 end
