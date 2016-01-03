@@ -1,13 +1,13 @@
 require 'active_support'
 
-module ActiveModelFlorder
+module ActiveRecordFlorder
   # Doc will come here
   module Base
     extend ActiveSupport::Concern
 
     included do
-      extend ActiveModelFlorder::Configurable::ClassMethods
-      include ActiveModelFlorder::Configurable
+      extend ActiveRecordFlorder::Configurable::ClassMethods
+      include ActiveRecordFlorder::Configurable
 
       before_create -> { push(:highest) }
 
@@ -26,8 +26,8 @@ module ActiveModelFlorder
     def move(position)
       position.to_f
 
-      fail ActiveModelFlorder::Error, 'Position param is required' unless position
-      fail ActiveModelFlorder::Error, 'Position should be > 0' unless (normalized_position = normalize_position(position)) > 0
+      fail ActiveRecordFlorder::Error, 'Position param is required' unless position
+      fail ActiveRecordFlorder::Error, 'Position should be > 0' unless (normalized_position = normalize_position(position)) > 0
       ensure_position_solving(position, normalized_position)
 
       if new_record?
@@ -123,7 +123,7 @@ module ActiveModelFlorder
          "#{position_attr_name} ASC"]
       else
         error_message = "Place param '#{place}' is not one of: increase, decrease, highest, lowest."
-        fail ActiveModelFlorder::Error, error_message
+        fail ActiveRecordFlorder::Error, error_message
       end
     end
 

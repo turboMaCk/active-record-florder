@@ -1,11 +1,11 @@
 ENV['RUBY_ENV'] ||= 'test'
-require 'active_model_florder'
+require 'active_record_florder'
 require 'active_record'
 require 'support/active_record'
 require 'support/models'
 require 'support/errors_test'
 require 'support/base_test'
-require 'active_model_florder'
+require 'active_record_florder'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.

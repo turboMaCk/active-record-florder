@@ -1,11 +1,11 @@
 require 'active_record'
-require 'active_model_florder/error'
-require 'active_model_florder/configurable'
-require 'active_model_florder/base'
-require 'active_model_florder/models'
+require 'active_record_florder/error'
+require 'active_record_florder/configurable'
+require 'active_record_florder/base'
+require 'active_record_florder/models'
 
 # doc
-module ActiveModelFlorder
+module ActiveRecordFlorder
   class << self
     def configure
       yield self if block_given?
@@ -29,4 +29,4 @@ module ActiveModelFlorder
   end
 end
 
-ActiveRecord::Base.extend ActiveModelFlorder::Models
+ActiveRecord::Base.extend ActiveRecordFlorder::Models

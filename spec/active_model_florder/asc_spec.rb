@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe ActiveModelFlorder::Base do
+RSpec.describe ActiveRecordFlorder::Base do
   def create_subject
     lambda {
       ASCMovable.create
