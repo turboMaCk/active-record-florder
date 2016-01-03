@@ -2,8 +2,7 @@ require 'active_record'
 require 'active_model_florder/error'
 require 'active_model_florder/configurable'
 require 'active_model_florder/base'
-require 'active_model_florder/desc'
-require 'active_model_florder/asc'
+require 'active_model_florder/models'
 
 # doc
 module ActiveModelFlorder
@@ -17,7 +16,7 @@ module ActiveModelFlorder
     end
 
     def position_scope_attr
-      :owner_id
+      nil
     end
 
     def min_position_delta
@@ -26,17 +25,6 @@ module ActiveModelFlorder
 
     def next_position_step
       2**16
-    end
-  end
-
-  module Models
-    def florder(type)
-      case type
-      when :asc
-        include ActiveModelFlorder::ASC
-      when :desc
-        include ActiveModelFlorder::DESC
-      end
     end
   end
 end

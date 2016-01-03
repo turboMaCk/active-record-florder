@@ -13,16 +13,21 @@ module ActiveModelFlorder
 
       # scoped ordered items by POSITION_SCOPE_ATTR eg. user_id, folder_id ...
       scope :position_scope, lambda { |value|
-        return default_scoped if position_scope_attr.empty?
+        return default_scoped unless position_scope_attr
         where(position_scope_attr.to_sym => value)
+      }
+
+      scope :ordered, lambda {
+        direction = florder_direction.to_sym == :desc ? 'DESC' : 'ASC'
+        order("#{position_attr_name} #{direction}")
       }
     end
 
     def move(position)
       position.to_f
 
-      fail ActiveModelFlorder::Error, "Position param is required" unless position
-      fail ActiveModelFlorder::Error, "Position should be > 0" unless (normalized_position = normalize_position(position)) > 0
+      fail ActiveModelFlorder::Error, 'Position param is required' unless position
+      fail ActiveModelFlorder::Error, 'Position should be > 0' unless (normalized_position = normalize_position(position)) > 0
       ensure_position_solving(position, normalized_position)
 
       if new_record?
@@ -87,6 +92,10 @@ module ActiveModelFlorder
       end
     end
 
+    def get_conflict_direction(position, conflict_position)
+      conflict_position > position ? :increase : :decrease
+    end
+
     def get_sibling(place)
       conditions = get_siblings_conditions(place)
 
@@ -126,6 +135,7 @@ module ActiveModelFlorder
     # Scope helper
     # returns value of scope attr
     def scope_value
+      return unless position_scope_attr
       send(position_scope_attr)
     end
   end
