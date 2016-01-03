@@ -4,14 +4,14 @@ end
 
 class ASCMovable < ActiveRecord::Base
   self.table_name = 'movables'
-  include ActiveModelFlorder::ASC
+  florder :asc
 
   belongs_to :owner
 end
 
 class DESCMovable < ActiveRecord::Base
   self.table_name = 'movables'
-  include ActiveModelFlorder::DESC
+  florder :desc
 
   belongs_to :owner
 end

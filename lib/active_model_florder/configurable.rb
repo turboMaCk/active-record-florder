@@ -11,7 +11,7 @@ module ActiveModelFlorder
       end
 
       def min_position_delta
-        0.0005
+        ActiveModelFlorder.min_position_delta
       end
     end
 
@@ -28,7 +28,7 @@ module ActiveModelFlorder
     end
 
     def next_position_step
-      2**16
+      ActiveModelFlorder.next_position_step
     end
   end
 end

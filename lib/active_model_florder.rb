@@ -1,3 +1,4 @@
+require 'active_record'
 require 'active_model_florder/error'
 require 'active_model_florder/configurable'
 require 'active_model_florder/base'
@@ -27,4 +28,17 @@ module ActiveModelFlorder
       2**16
     end
   end
+
+  module Models
+    def florder(type)
+      case type
+      when :asc
+        include ActiveModelFlorder::ASC
+      when :desc
+        include ActiveModelFlorder::DESC
+      end
+    end
+  end
 end
+
+ActiveRecord::Base.extend ActiveModelFlorder::Models
