@@ -12,7 +12,7 @@ RSpec.describe ActiveModelFlorder::ASC do
   let!(:subject_1) { create_subject.call }
   let!(:subject_2) { create_subject.call }
   let!(:subject_3) { create_subject.call }
-  let(:step_config) { subject_1.class::MIN_POSITION_DELTA }
+  let(:step_config) { subject_1.class::min_position_delta }
 
   def fetch_ordered
     subject_1.class.where(owner: owner).ordered

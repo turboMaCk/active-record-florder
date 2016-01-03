@@ -5,17 +5,16 @@ module ActiveModelFlorder
   module Base
     extend ActiveSupport::Concern
 
-    POSITION_ATTR_NAME = :position
-    MIN_POSITION_DELTA = 0.0005
-    POSITION_SCOPE_ATTR = :owner_id
-    NEXT_POSITION_STEP = 2**16
     included do
+      extend ActiveModelFlorder::Configurable::ClassMethods
+      include ActiveModelFlorder::Configurable
+
       before_create -> { push(:highest) }
 
       # scoped ordered items by POSITION_SCOPE_ATTR eg. user_id, folder_id ...
       scope :position_scope, lambda { |value|
-        return default_scoped if POSITION_SCOPE_ATTR.empty?
-        where(POSITION_SCOPE_ATTR.to_sym => value)
+        return default_scoped if position_scope_attr.empty?
+        where(position_scope_attr.to_sym => value)
       }
     end
 
@@ -27,9 +26,9 @@ module ActiveModelFlorder
       ensure_position_solving(position, normalized_position)
 
       if new_record?
-        self[POSITION_ATTR_NAME.to_sym] = normalized_position
+        self[position_attr_name.to_sym] = normalized_position
       else
-        update_attribute(POSITION_ATTR_NAME.to_sym, normalized_position)
+        update_attribute(position_attr_name.to_sym, normalized_position)
       end
 
       self
@@ -38,10 +37,10 @@ module ActiveModelFlorder
     protected
 
     def slide(direction)
-      sibling_position = get_sibling(direction).try(POSITION_ATTR_NAME.to_sym)
+      sibling_position = get_sibling(direction).try(position_attr_name.to_sym)
 
       if sibling_position
-        move((self[POSITION_ATTR_NAME.to_sym] + sibling_position) / 2.0)
+        move((send(position_attr_name.to_sym) + sibling_position) / 2.0)
       else
         push(direction == :increase ? :highest : :lowest)
       end
@@ -50,9 +49,9 @@ module ActiveModelFlorder
     private
 
     def push(place)
-      return move(NEXT_POSITION_STEP) unless self.class.position_scope(scope_value).any?
+      return move(next_position_step) unless self.class.position_scope(scope_value).any?
 
-      sibling_position = get_sibling(place).try(POSITION_ATTR_NAME.to_sym)
+      sibling_position = get_sibling(place).try(position_attr_name.to_sym)
 
       position = calc_push_position(place, sibling_position)
       move(position)
@@ -61,7 +60,7 @@ module ActiveModelFlorder
     def calc_push_position(place, sibling_position)
       case place
       when :highest
-        sibling_position + NEXT_POSITION_STEP
+        sibling_position + next_position_step
       when :lowest
         sibling_position / 2.0
       end
@@ -69,11 +68,11 @@ module ActiveModelFlorder
 
     # Find all models with conflicting position and solve conflicts
     def ensure_position_solving(position, normalized_position)
-      min = normalized_position - MIN_POSITION_DELTA
-      max = normalized_position + MIN_POSITION_DELTA
+      min = normalized_position - min_position_delta
+      max = normalized_position + min_position_delta
 
       conflicts = self.class.position_scope(scope_value)
-                  .where("#{POSITION_ATTR_NAME} > ? AND #{POSITION_ATTR_NAME} < ?", min, max)
+                  .where("#{position_attr_name} > ? AND #{position_attr_name} < ?", min, max)
                   .where.not(id: id)
                   .order(:position)
 
@@ -92,19 +91,19 @@ module ActiveModelFlorder
     def get_siblings_conditions(place)
       case place
       when :increase
-        [["#{POSITION_ATTR_NAME} > ?",
-          self[POSITION_ATTR_NAME.to_sym]],
-         "#{POSITION_ATTR_NAME} DESC"]
+        [["#{position_attr_name} > ?",
+          send(position_attr_name.to_sym)],
+         "#{position_attr_name} DESC"]
       when :decrease
-        [["#{POSITION_ATTR_NAME} < ?",
-          self[POSITION_ATTR_NAME.to_sym]],
-         "#{POSITION_ATTR_NAME} ASC"]
+        [["#{position_attr_name} < ?",
+          send(position_attr_name.to_sym)],
+         "#{position_attr_name} ASC"]
       when :highest
         [nil,
-         "#{POSITION_ATTR_NAME} DESC"]
+         "#{position_attr_name} DESC"]
       when :lowest
         [nil,
-         "#{POSITION_ATTR_NAME} ASC"]
+         "#{position_attr_name} ASC"]
       else
         error_message = "Place param '#{place}' is not one of: increase, decrease, highest, lowest."
         fail ActiveModelFlorder::Error, error_message
@@ -113,13 +112,13 @@ module ActiveModelFlorder
 
     # returns normalized position (positive rounded value)
     def normalize_position(position)
-      position.round(MIN_POSITION_DELTA.to_s.split('.').last.size)
+      position.round(min_position_delta.to_s.split('.').last.size)
     end
 
     # Scope helper
     # returns value of scope attr
     def scope_value
-      send(POSITION_SCOPE_ATTR)
+      send(position_scope_attr)
     end
   end
 end
