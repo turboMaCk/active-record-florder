@@ -11,11 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151230210451) do
+ActiveRecord::Schema.define(version: 20160103190528) do
 
   create_table "movables", force: true do |t|
     t.integer "owner_id"
-    t.float   "position", default: 0.0
+    t.float   "position",   default: 0.0
+    t.float   "position_2", default: 0.0
   end
 
   create_table "owners", force: true do |t|

@@ -1,5 +1,5 @@
 class Owner < ActiveRecord::Base
-  has_many :movables
+  has_many :configured_movables
 end
 
 class ASCMovable < ActiveRecord::Base
@@ -20,5 +20,5 @@ class ConfiguredMovable < ActiveRecord::Base
   self.table_name = 'movables'
   belongs_to :owner
 
-  florder :desc, scope: :owner_id, min_delta: 1, step: 10
+  florder :desc, attribute: :position_2, scope: :owner_id, min_delta: 1, step: 10
 end

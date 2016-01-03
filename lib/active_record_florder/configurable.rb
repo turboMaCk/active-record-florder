@@ -7,7 +7,7 @@ module ActiveRecordFlorder
       end
 
       def position_attr_name
-        @florder_config[:attr] || ActiveRecordFlorder.position_attr_name
+        @florder_config[:attribute] || ActiveRecordFlorder.position_attr_name
       end
 
       def position_scope_attr

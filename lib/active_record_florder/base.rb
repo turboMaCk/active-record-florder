@@ -45,7 +45,7 @@ module ActiveRecordFlorder
       sibling_position = get_sibling(direction).try(position_attr_name.to_sym)
 
       if sibling_position
-        move((send(position_attr_name.to_sym) + sibling_position) / 2.0)
+        move((send(position_attr_name.to_sym) + min_position_delta))
       else
         push(direction == :increase ? :highest : :lowest)
       end
@@ -129,7 +129,12 @@ module ActiveRecordFlorder
 
     # returns normalized position (positive rounded value)
     def normalize_position(position)
-      position.round(min_position_delta.to_s.split('.').last.size)
+      round_value = min_position_delta.to_s.split('.').last.size
+      if round_value > 0
+        position.round(round_value)
+      else
+        (position / 10**(min_position_delta.to_s.size - 1)).round
+      end
     end
 
     # Scope helper

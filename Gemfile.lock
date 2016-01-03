@@ -50,7 +50,6 @@ PLATFORMS
 
 DEPENDENCIES
   active_record_tasks (~> 1.1.0)
-  activemodel
   activerecord (~> 4.0.0)
   activesupport (~> 4.0)
   rake
