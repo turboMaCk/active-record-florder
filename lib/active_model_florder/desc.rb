@@ -13,13 +13,8 @@ module ActiveModelFlorder
 
     private
 
-    def position_conflict_solver(conflicts, position)
-      conflicts.each do |conflict|
-        conflict_position = conflict.send(position_attr_name.to_sym)
-        direction = conflict_position > position ? :increase : :decrease
-
-        conflict.slide(direction)
-      end
+    def get_conflict_direction(position, conflict_position)
+      conflict_position > position ? :increase : :decrease
     end
   end
 end

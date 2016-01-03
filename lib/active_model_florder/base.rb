@@ -79,6 +79,14 @@ module ActiveModelFlorder
       position_conflict_solver(conflicts, position) if conflicts.present?
     end
 
+    def position_conflict_solver(conflicts, position)
+      conflicts.each do |conflict|
+        conflict_position = conflict.send(position_attr_name.to_sym)
+        direction = get_conflict_direction(position, conflict_position)
+        conflict.slide(direction)
+      end
+    end
+
     def get_sibling(place)
       conditions = get_siblings_conditions(place)
 
