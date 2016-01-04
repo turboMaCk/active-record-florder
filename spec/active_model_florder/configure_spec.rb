@@ -69,5 +69,11 @@ RSpec.describe ActiveRecordFlorder::Configurable do
         expect(fetch_ordered.first.position_2 - fetch_ordered.last.position_2 >= 2 * step_config).to be_truthy
       end
     end
+
+    describe 'next position step' do
+      it 'should respect settings' do
+        expect((subject_1.position_2 - subject_2.position_2).abs).to eq(subject_1.class.next_position_step)
+      end
+    end
   end
 end
