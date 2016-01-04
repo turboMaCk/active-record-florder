@@ -5,6 +5,7 @@ require 'support/active_record'
 require 'support/models'
 require 'support/errors_test'
 require 'support/base_test'
+require 'support/class_methods_test'
 require 'active_record_florder'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
