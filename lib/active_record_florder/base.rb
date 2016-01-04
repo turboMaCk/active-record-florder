@@ -103,12 +103,6 @@ module ActiveRecordFlorder
       end
     end
 
-    def highest_position
-    end
-
-    def lowest_position
-    end
-
     # Find all models with conflicting position and solve conflicts
     def ensure_position_solving(position, normalized_position)
       min = normalized_position - min_position_delta
