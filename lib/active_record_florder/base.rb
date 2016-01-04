@@ -51,34 +51,39 @@ module ActiveRecordFlorder
 
     def slide(direction, ensured_position)
       sibling = get_sibling(direction)
-      sibling_position = sibling.try(position_attr_name.to_sym)
-      position = send(position_attr_name.to_sym)
 
-      if sibling_position
-        new_position = (position + sibling_position) / 2
-
-        if (new_position - ensured_position).abs < min_position_delta
-          new_position = get_slide_edge_position(direction, ensured_position)
-        end
-
-        unless (normalize_position(new_position) > 0)
-          return self.class.reinit_positions
-        end
-
-        min = new_position - min_position_delta
-        max = new_position + min_position_delta
-
-        self.class.where("#{position_attr_name} > ? AND #{position_attr_name} < ?", max, min).each do |conflict|
-          c.slide(direction)
-        end
-
-        move(new_position)
+      if sibling
+        slide_to_sibling(direction, sibling, ensured_position)
       else
         push(direction == :increase ? :highest : :lowest)
       end
     end
 
     private
+
+    def slide_to_sibling(direction, sibling, ensured_position)
+      sibling_position = sibling.try(position_attr_name.to_sym)
+      position = send(position_attr_name.to_sym)
+      new_position = (position + sibling_position) / 2
+
+      if (new_position - ensured_position).abs < min_position_delta
+        new_position = get_slide_edge_position(direction, ensured_position)
+      end
+
+      unless (normalize_position(new_position) > 0)
+        return self.class.reinit_positions
+      end
+
+      min = new_position - min_position_delta
+      max = new_position + min_position_delta
+
+      self.class.position_scope(scope_value)
+        .where("#{position_attr_name} > ? AND #{position_attr_name} < ?", max, min).each do |conflict|
+          c.slide(direction)
+        end
+
+      move(new_position)
+    end
 
     def get_slide_edge_position(direction, ensured_position)
       direction == :increase ? ensured_position + min_position_delta : ensured_position - min_position_delta
