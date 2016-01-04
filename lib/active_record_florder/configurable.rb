@@ -1,6 +1,5 @@
 module ActiveRecordFlorder
   module Configurable
-
     module ClassMethods
       def florder_direction
         @florder_config[:type]
