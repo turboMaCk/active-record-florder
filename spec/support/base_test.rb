@@ -31,7 +31,7 @@ RSpec.shared_examples 'base' do
         subject_1.move(1)
         subject_2.move(2)
         subject_3.move(3)
-        subject_2.send(:slide, :increase)
+        subject_2.send(:slide, :increase, 3)
 
         expect(fetch_asc).to eq [subject_1, subject_2, subject_3]
         expect(subject_2.position > 2).to be_truthy
@@ -41,7 +41,7 @@ RSpec.shared_examples 'base' do
         subject_1.move(1)
         subject_2.move(2)
         subject_3.move(3)
-        subject_2.send(:slide, :decrease)
+        subject_2.send(:slide, :decrease, 1)
 
         expect(fetch_asc).to eq [subject_1, subject_2, subject_3]
         expect(subject_2.position < 2).to be_truthy

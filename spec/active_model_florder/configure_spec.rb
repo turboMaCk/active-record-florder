@@ -19,6 +19,13 @@ RSpec.describe ActiveRecordFlorder::Configurable do
       owner.configured_movables.ordered
     end
 
+    describe 'normalization' do
+      it 'should round based on min delta settings' do
+        subject_1.move(1.1)
+        expect(subject_1.position_2).to eq(1)
+      end
+    end
+
     describe 'position attr name' do
       it 'should have 0 position attr' do
         expect(subject_1.position).to eq(0)
@@ -56,11 +63,10 @@ RSpec.describe ActiveRecordFlorder::Configurable do
 
       it 'should respect given value' do
         expect(step_config).to eq(1)
-        puts subject_1.position_2 / 10**(step_config.to_s.size - 1).round
-        puts subject_2.reload.position_2 - subject_1.reload.position_2
-        expect(subject_3.reload.position_2 - subject_2.reload.position_2 > step_config).to be_truthy
-        expect(subject_2.position_2 - subject_1.position_2 > step_config).to be_truthy
-        expect(subject_3.position_2 - subject_1.position_2 > 2 * step_config).to be_truthy
+
+        expect(fetch_ordered.first.position_2 - fetch_ordered[1].position_2 >= step_config).to be_truthy
+        expect(fetch_ordered[1].position_2 - fetch_ordered.last.position_2 >= step_config).to be_truthy
+        expect(fetch_ordered.first.position_2 - fetch_ordered.last.position_2 >= 2 * step_config).to be_truthy
       end
     end
   end

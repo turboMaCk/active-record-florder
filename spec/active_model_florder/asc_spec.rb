@@ -90,6 +90,24 @@ RSpec.describe ActiveRecordFlorder::Base do
     end
   end
 
+  describe 'min position delta should be respected' do
+    before(:each) do
+      subject_1.move(1)
+      subject_2.move(1 - step_config)
+      subject_3.move(1)
+    end
+
+    it 'should generate delata < than settup value' do
+      expect((fetch_ordered.first.position - fetch_ordered[1].position).abs.round(4) >= step_config).to be_truthy
+      expect((fetch_ordered[1].position - fetch_ordered.last.position).abs.round(4) >= step_config).to be_truthy
+      expect((fetch_ordered.first.position - fetch_ordered.last.position).abs.round(4) >= step_config*2).to be_truthy
+    end
+
+    it 'should not affect positions' do
+      expect(fetch_ordered).to eq [subject_2, subject_1, subject_3]
+    end
+  end
+
   include_examples 'errors'
   include_examples 'base'
 end

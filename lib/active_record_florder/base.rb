@@ -21,6 +21,12 @@ module ActiveRecordFlorder
         direction = florder_direction.to_sym == :desc ? 'DESC' : 'ASC'
         order("#{position_attr_name} #{direction}")
       }
+
+      def self.reinit_positions
+        all.order("#{position_attr_name} ASC").each_with_index do |model, index|
+          model.update_attribute(position_attr_name.to_sym, (index + 1) * next_position_step)
+        end
+      end
     end
 
     def move(position)
@@ -28,6 +34,8 @@ module ActiveRecordFlorder
 
       fail ActiveRecordFlorder::Error, 'Position param is required' unless position
       fail ActiveRecordFlorder::Error, 'Position should be > 0' unless (normalized_position = normalize_position(position)) > 0
+      normalized_position = normalize_position(position)
+
       ensure_position_solving(position, normalized_position)
 
       if new_record?
@@ -41,11 +49,30 @@ module ActiveRecordFlorder
 
     protected
 
-    def slide(direction)
-      sibling_position = get_sibling(direction).try(position_attr_name.to_sym)
+    def slide(direction, ensured_position)
+      sibling = get_sibling(direction)
+      sibling_position = sibling.try(position_attr_name.to_sym)
+      position = send(position_attr_name.to_sym)
 
       if sibling_position
-        move((send(position_attr_name.to_sym) + min_position_delta))
+        new_position = (position + sibling_position) / 2
+
+        if (new_position - ensured_position).abs < min_position_delta
+          new_position = get_slide_edge_position(direction, ensured_position)
+        end
+
+        unless (normalize_position(new_position) > 0)
+          return self.class.reinit_positions
+        end
+
+        min = new_position - min_position_delta
+        max = new_position + min_position_delta
+
+        self.class.where("#{position_attr_name} > ? AND #{position_attr_name} < ?", max, min).each do |conflict|
+          c.slide(direction)
+        end
+
+        move(new_position)
       else
         push(direction == :increase ? :highest : :lowest)
       end
@@ -53,12 +80,17 @@ module ActiveRecordFlorder
 
     private
 
+    def get_slide_edge_position(direction, ensured_position)
+      direction == :increase ? ensured_position + min_position_delta : ensured_position - min_position_delta
+    end
+
     def push(place)
       return move(next_position_step) unless self.class.position_scope(scope_value).any?
 
       sibling_position = get_sibling(place).try(position_attr_name.to_sym)
 
       position = calc_push_position(place, sibling_position)
+
       move(position)
     end
 
@@ -71,6 +103,12 @@ module ActiveRecordFlorder
       end
     end
 
+    def highest_position
+    end
+
+    def lowest_position
+    end
+
     # Find all models with conflicting position and solve conflicts
     def ensure_position_solving(position, normalized_position)
       min = normalized_position - min_position_delta
@@ -81,14 +119,14 @@ module ActiveRecordFlorder
                   .where.not(id: id)
                   .order(:position)
 
-      position_conflict_solver(conflicts, position) if conflicts.present?
+      position_conflict_solver(conflicts, position, normalized_position) if conflicts.present?
     end
 
-    def position_conflict_solver(conflicts, position)
+    def position_conflict_solver(conflicts, position, normalized_position)
       conflicts.each do |conflict|
         conflict_position = conflict.send(position_attr_name.to_sym)
         direction = get_conflict_direction(position, conflict_position)
-        conflict.slide(direction)
+        conflict.slide(direction, normalized_position)
       end
     end
 
@@ -129,11 +167,12 @@ module ActiveRecordFlorder
 
     # returns normalized position (positive rounded value)
     def normalize_position(position)
-      round_value = min_position_delta.to_s.split('.').last.size
-      if round_value > 0
-        position.round(round_value)
+      splitted_value = min_position_delta.to_s.split('.')
+
+      if splitted_value.size.to_i > 1
+        position.round(splitted_value.last.size)
       else
-        (position / 10**(min_position_delta.to_s.size - 1)).round
+       (position / 10**(min_position_delta.to_s.size - 1)).round
       end
     end
 
