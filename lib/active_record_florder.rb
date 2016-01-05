@@ -3,6 +3,7 @@ require 'active_record_florder/error'
 require 'active_record_florder/configurable'
 require 'active_record_florder/base'
 require 'active_record_florder/models'
+require 'active_record_florder/version'
 
 # doc
 module ActiveRecordFlorder
