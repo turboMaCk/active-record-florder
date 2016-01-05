@@ -90,7 +90,9 @@ module ActiveRecordFlorder
     end
 
     def push(place)
-      return move(next_position_step) unless self.class.position_scope(scope_value).any?
+      unless self.class.position_scope(scope_value).any? { |m| m.position.present? }
+        return move(next_position_step)
+      end
 
       sibling_position = get_sibling(place).try(position_attr_name.to_sym)
 
@@ -100,6 +102,8 @@ module ActiveRecordFlorder
     end
 
     def calc_push_position(place, sibling_position)
+      return unless sibling_position
+
       case place
       when :highest
         sibling_position + next_position_step
