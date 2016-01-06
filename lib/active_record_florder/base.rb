@@ -13,7 +13,7 @@ module ActiveRecordFlorder
 
       # scoped ordered items by POSITION_SCOPE_ATTR eg. user_id, folder_id ...
       scope :position_scope, lambda { |value|
-        return default_scoped unless position_scope_attr
+        return all unless position_scope_attr
         where(position_scope_attr.to_sym => value)
       }
 

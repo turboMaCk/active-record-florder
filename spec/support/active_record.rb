@@ -5,7 +5,7 @@ require 'active_record_tasks'
 config = ActiveRecordTasks.config
 config.db_dir ||= 'db'
 config.db_config_path ||= File.join(config.db_dir, 'config.yml')
-config.env ||= 'development'
+config.env ||= 'test'
 
 ActiveRecord::Base.establish_connection(
   adapter: 'sqlite3',

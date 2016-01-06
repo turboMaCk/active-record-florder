@@ -1,0 +1,3 @@
+test:
+  adapter: sqlite3
+  database: db/active-model-florder_test.sqlite3
