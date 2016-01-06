@@ -3,6 +3,8 @@
 [![Build Status](https://travis-ci.org/turboMaCk/active-record-florder.svg)](https://travis-ci.org/turboMaCk/active-record-florder)
 [![Code Climate](https://codeclimate.com/github/turboMaCk/active-record-florder/badges/gpa.svg)](https://codeclimate.com/github/turboMaCk/active-record-florder)
 [![Test Coverage](https://codeclimate.com/github/turboMaCk/active-record-florder/badges/coverage.svg)](https://codeclimate.com/github/turboMaCk/active-record-florder/coverage)
+[![Inline docs](http://inch-ci.org/github/turboMaCk/active-record-florder.svg?branch=master)](http://inch-ci.org/github/turboMaCk/active-record-florder)
+[![Gem Version](https://badge.fury.io/rb/active_record_florder.svg)](https://badge.fury.io/rb/active_record_florder)
 
 Floating point ActiveRecord models ordering for rich client apps heavily inspirated by Trello's ordering alorithm.
 ActiveRecordFlorder let client decide position of model in collection normalize given value and resolve conflicting positions in collection
@@ -18,10 +20,14 @@ THIS SOFTWARE IS STILL IN BETA!
 add to your Gemfile if you're using Bundler
 
 ```ruby
-gem 'active_record_florder', git: 'https://github.com/turboMaCk/active-record-florder.git'
+gem 'active_record_florder', '~> 0.0.1'
 ```
 
-Ruby gem comming soon!
+or simply install via Ruby Gems
+
+```shell
+gem install active_record_florder
+```
 
 ## Api
 
