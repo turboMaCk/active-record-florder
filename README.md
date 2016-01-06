@@ -51,7 +51,7 @@ This gem defines new method for ActiveRecord::Base named `florder`.
 
 ```ruby
 class Post < ActiveRecord::Base
-  florder :desc, scope: :user, attribute: order_position, min_delta: 0.001, step: 2**8
+  florder :desc, scope: :user, attribute: :order_position, min_delta: 0.001, step: 2**8
 end
 ```
 
