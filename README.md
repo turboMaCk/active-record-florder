@@ -6,11 +6,11 @@
 [![Inline docs](http://inch-ci.org/github/turboMaCk/active-record-florder.svg?branch=master)](http://inch-ci.org/github/turboMaCk/active-record-florder)
 [![Gem Version](https://badge.fury.io/rb/active_record_florder.svg)](https://badge.fury.io/rb/active_record_florder)
 
-Floating point ActiveRecord models ordering for rich client apps heavily inspirated by Trello's ordering alorithm.
-ActiveRecordFlorder let client decide position of model in collection normalize given value and resolve conflicting positions in collection
-to keep your data clean. It's highly optimalized and generate as small SQL queries as possible.
+Floating point ActiveRecord Models ordering for rich client apps heavily inspirated by Trello's ordering alorithm.
+ActiveRecordFlorder let client decide model's position in collection, normalize given value and resolve conflicts
+to keep your data clean. It's highly optimalized and generate as small SQL queries.
 The whole philosophy is to load and update as little records as possible so in 99% it runs just one SELECT and one UPDATE.
-In edge cases sanitization of all records happens and bring records back to the Garden of Eden.
+In edge cases sanitization of all records happens and bring records back to the "Garden of Eden" state.
 It's implemented with both Rails and non-Rails apps in mind and highly configurable.
 
 THIS SOFTWARE IS STILL IN BETA!
@@ -35,21 +35,29 @@ This gem defines new method for ActiveRecord::Base named `florder`.
 
 ### Parameters
 
-* direction {Symbol} values: `:asc` `:desc`, **required**
-* options {Hash}, optional
+* `direction {Symbol}` values: `:asc` `:desc`, **required**
+* `options {Hash}`, optional
 
 ### Options
 
-* scope {Symbol} - ordering scope (should be relationship or any other model property)
-* attribute {Sumbol} - position column name, **default:** position
-* min_delta {Number} - Minimal allowed position delata, affect position normalization *
-* step: {Number} - Optimal (init) delta between positions *
+* `scope {Symbol}` - ordering scope (should be relationship or any other model property)
+* `attribute {Sumbol}` - position column name, **default:** position
+* `min_delta {Number}` - Minimal allowed position delata, affect position normalization *
+* `step {Number}` - Optimal (init) delta between positions *
 
 * *Setting this should affect performance. We recommend using default values*
 
+### Example
+
+```ruby
+class Post < ActiveRecord::Base
+  florder :desc, scope: :user, attribute: order_position, min_delta: 0.001, step: 2**8
+end
+```
+
 ## Usage
 
-If you're using Rails or ActiveRecordMigrations create migration for your models:
+If you're using Rails or `ActiveRecordMigrations` create new migration:
 
 ```ruby
 class AddPositionToPosts < ActiveRecord::Migration
@@ -65,7 +73,7 @@ With rails you can use generator for this:
 rails g migration add_position_to_posts position:float
 ```
 
-Now migrate your databse:
+Now migrate your database:
 
 ```shell
 rake db:migrate
@@ -119,7 +127,7 @@ Client itself request position for given Model. This Gem is build with drag and 
 Calculation on is simple - you just need to now position of two sibling to place model in middle of them.
 For first and last position simply use hiher/lower value than first / last.
 
-Here is teoretical implementation in javascript:
+Here is hypotetical implementation in JavaScript:
 
 ```js
 /*
