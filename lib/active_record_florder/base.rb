@@ -44,7 +44,7 @@ module ActiveRecordFlorder
     # @returns self {ModelInstance}
     # @api public
     def move(position)
-      position.to_f
+      position = position.to_f
 
       fail ActiveRecordFlorder::Error, 'Position param is required' unless position
       fail ActiveRecordFlorder::Error, 'Position should be > 0' unless (normalized_position = normalize_position(position)) > 0

@@ -9,6 +9,7 @@ require 'support/models'
 require 'support/errors_test'
 require 'support/base_test'
 require 'support/class_methods_test'
+require 'support/retyping_test'
 require 'active_record_florder'
 require "codeclimate-test-reporter"
 

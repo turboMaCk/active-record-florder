@@ -109,6 +109,7 @@ RSpec.describe ActiveRecordFlorder::Base do
   end
 
   include_examples 'errors'
+  include_examples 'retype position'
   include_examples 'base'
   include_examples 'class methods'
 end
