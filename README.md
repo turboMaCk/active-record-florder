@@ -62,7 +62,7 @@ If you're using Rails or `ActiveRecordMigrations` create new migration:
 ```ruby
 class AddPositionToPosts < ActiveRecord::Migration
   def change
-    add_column :posts, :position, default: 0
+    add_column :posts, :position, :float, default: 0
   end
 end
 ```
