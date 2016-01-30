@@ -55,6 +55,14 @@ module ActiveRecordFlorder
     def get_step
       @step || 2**16
     end
+
+    def populate(value)
+      @populate = value
+    end
+
+    def get_populate
+      @populate || false
+    end
   end
 end
 

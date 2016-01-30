@@ -50,12 +50,18 @@ module ActiveRecordFlorder
       fail ActiveRecordFlorder::Error, 'Position should be > 0' unless (normalized_position = normalize_position(position)) > 0
       normalized_position = normalize_position(position)
 
-      ensure_position_solving(position, normalized_position)
+      affected = ensure_position_solving(position, normalized_position)
 
       if new_record?
         self[position_attr_name.to_sym] = normalized_position
       else
         update_attribute(position_attr_name.to_sym, normalized_position)
+      end
+
+      # populating all affected records
+      if move_populate_all
+        affected = [] unless affected
+        return affected << self
       end
 
       self

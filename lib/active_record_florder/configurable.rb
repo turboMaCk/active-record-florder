@@ -25,6 +25,10 @@ module ActiveRecordFlorder
       def next_position_step
         @florder_config[:step] || ActiveRecordFlorder.get_step
       end
+
+      def move_populate_all
+        @florder_config[:populate] || ActiveRecordFlorder.get_populate
+      end
     end
 
     # All instance methods are just proxy
@@ -47,6 +51,10 @@ module ActiveRecordFlorder
 
     def next_position_step
       self.class.next_position_step
+    end
+
+    def move_populate_all
+      self.class.move_populate_all
     end
   end
 end
