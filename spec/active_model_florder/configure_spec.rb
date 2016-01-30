@@ -75,5 +75,15 @@ RSpec.describe ActiveRecordFlorder::Configurable do
         expect((subject_1.position_2 - subject_2.position_2).abs).to eq(subject_1.class.next_position_step)
       end
     end
+
+    describe 'populate' do
+      before(:each) do
+        subject_1.move(1)
+      end
+
+      it 'should return all affected records' do
+        expect(subject_2.move(1)).to eq([subject_1, subject_2])
+      end
+    end
   end
 end
