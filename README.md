@@ -159,6 +159,9 @@ ActiveRecordFlorder.configure do |config|
 end
 ```
 
+## Upgrading
+Please see summary of changes for each version in [changelog](CHANGELOG.md)
+
 ## Developing
 
 Git clone repository and cd in it:
