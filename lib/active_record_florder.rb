@@ -12,56 +12,31 @@ require 'active_record_florder/version'
 module ActiveRecordFlorder
   class << self
 
+    attr_writer(:attribute, :min_delta, :step, :return_all_affected)
+    attr_accessor(:scope)
+
+    def attribute
+      @attribute || :position
+    end
+
+    def min_delta
+      @min_delta || 0.0005
+    end
+
+    def step
+      @step || 2**16
+    end
+
+    def return_all_affected
+      @return_all_affected || false
+    end
+
     # Configure method can be used from initializer
     # ActiveRecordFlorder.confige do |config|
     #   config.{attribute} {value}
     # end
     def configure
       yield self if block_given?
-    end
-
-    # DB column name
-    def attribute(value)
-      @attribute = value
-    end
-
-    def get_attribute
-      @attribute || :position
-    end
-
-    # Position scope
-    def scope(value)
-      @scope = value
-    end
-
-    def get_scope
-      @scope || nil
-    end
-
-    # Minimal allowed delata between positions
-    def min_delta(value)
-      @min_delta = value
-    end
-
-    def get_min_delta
-      @min_delta || 0.0005
-    end
-
-    # Optimal and initial delta between positions
-    def step(value)
-      @step = value
-    end
-
-    def get_step
-      @step || 2**16
-    end
-
-    def populate(value)
-      @populate = value
-    end
-
-    def get_populate
-      @populate || false
     end
   end
 end

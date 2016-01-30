@@ -11,23 +11,23 @@ module ActiveRecordFlorder
       end
 
       def position_attr_name
-        @florder_config[:attribute] || ActiveRecordFlorder.get_attribute
+        @florder_config[:attribute] || ActiveRecordFlorder.attribute
       end
 
       def position_scope_attr
-        @florder_config[:scope] || ActiveRecordFlorder.get_scope
+        @florder_config[:scope] || ActiveRecordFlorder.scope
       end
 
       def min_position_delta
-        @florder_config[:min_delta] || ActiveRecordFlorder.get_min_delta
+        @florder_config[:min_delta] || ActiveRecordFlorder.min_delta
       end
 
       def next_position_step
-        @florder_config[:step] || ActiveRecordFlorder.get_step
+        @florder_config[:step] || ActiveRecordFlorder.step
       end
 
       def return_all_affected_by_move
-        @florder_config[:populate] || ActiveRecordFlorder.get_populate
+        @florder_config[:return_all_affected] || ActiveRecordFlorder.return_all_affected
       end
     end
 

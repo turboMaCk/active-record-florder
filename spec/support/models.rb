@@ -20,5 +20,5 @@ class ConfiguredMovable < ActiveRecord::Base
   self.table_name = 'movables'
   belongs_to :owner
 
-  florder :desc, attribute: :position_2, scope: :owner, min_delta: 1, step: 10, populate: true
+  florder :desc, attribute: :position_2, scope: :owner, min_delta: 1, step: 10, return_all_affected: true
 end

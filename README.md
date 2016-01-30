@@ -42,7 +42,7 @@ This gem defines new method for `ActiveRecord::Base` named `florder`.
 * `attribute {Sumbol}` - position column name, **default:** position
 * `min_delta {Number}` - Minimal allowed position delata, affect position normalization *
 * `step {Number}` - Optimal (init) delta between positions *
-* `populate {Boolean}` - If true `move` method will return array of all affected records instead of just `self`
+* `return_all_affected {Boolean}` - If true `move` method will return array of all affected records instead of just `self`
 
 * *Setting this should affect performance. We recommend using default values*
 
@@ -50,7 +50,7 @@ This gem defines new method for `ActiveRecord::Base` named `florder`.
 
 ```ruby
 class Post < ActiveRecord::Base
-  florder :desc, scope: :user, attribute: :order_position, min_delta: 0.001, step: 2**8, populate: true
+  florder :desc, scope: :user, attribute: :order_position, min_delta: 0.001, step: 2**8, return_all_affected: true
 end
 ```
 
@@ -152,10 +152,10 @@ You can use initializer to overwrite default settings like this:
 
 ```Ruby
 ActiveRecordFlorder.configure do |config|
-  config.scope :owner
-  config.attribute :position_2
-  config.step 3
-  config.min_delta 0.1
+  config.scope = :owner
+  config.attribute = :position_2
+  config.step = 3
+  config.min_delta = 0.1
 end
 ```
 
