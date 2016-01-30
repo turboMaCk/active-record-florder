@@ -59,7 +59,8 @@ module ActiveRecordFlorder
       end
 
       # populating all affected records
-      if move_populate_all
+      # only if return_all_affected_by_move option is true
+      if return_all_affected_by_move
         affected = [] unless affected
         return affected << self
       end

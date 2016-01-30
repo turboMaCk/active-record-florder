@@ -26,7 +26,7 @@ module ActiveRecordFlorder
         @florder_config[:step] || ActiveRecordFlorder.get_step
       end
 
-      def move_populate_all
+      def return_all_affected_by_move
         @florder_config[:populate] || ActiveRecordFlorder.get_populate
       end
     end
@@ -53,8 +53,8 @@ module ActiveRecordFlorder
       self.class.next_position_step
     end
 
-    def move_populate_all
-      self.class.move_populate_all
+    def return_all_affected_by_move
+      self.class.return_all_affected_by_move
     end
   end
 end
