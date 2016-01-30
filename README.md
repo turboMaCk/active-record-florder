@@ -13,8 +13,6 @@ The whole philosophy is to load and update as little records as possible so in 9
 In edge cases sanitization of all records happens and bring records back to the "Garden of Eden" state.
 It's implemented with both Rails and non-Rails apps in mind and highly configurable.
 
-THIS SOFTWARE IS STILL IN BETA!
-
 ## Installation
 
 add to your Gemfile if you're using Bundler
@@ -31,7 +29,7 @@ gem install active_record_florder
 
 ## Api
 
-This gem defines new method for ActiveRecord::Base named `florder`.
+This gem defines new method for `ActiveRecord::Base` named `florder`.
 
 ### Parameters
 
@@ -44,6 +42,7 @@ This gem defines new method for ActiveRecord::Base named `florder`.
 * `attribute {Sumbol}` - position column name, **default:** position
 * `min_delta {Number}` - Minimal allowed position delata, affect position normalization *
 * `step {Number}` - Optimal (init) delta between positions *
+* `populate {Boolean}` - If true `move` method will return array of all affected records instead of just `self`
 
 * *Setting this should affect performance. We recommend using default values*
 
@@ -51,7 +50,7 @@ This gem defines new method for ActiveRecord::Base named `florder`.
 
 ```ruby
 class Post < ActiveRecord::Base
-  florder :desc, scope: :user, attribute: :order_position, min_delta: 0.001, step: 2**8
+  florder :desc, scope: :user, attribute: :order_position, min_delta: 0.001, step: 2**8, populate: true
 end
 ```
 
