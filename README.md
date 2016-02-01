@@ -18,7 +18,7 @@ It's implemented with both Rails and non-Rails apps in mind and highly configura
 add to your Gemfile if you're using Bundler
 
 ```ruby
-gem 'active_record_florder', '~> 0.0.1'
+gem 'active_record_florder', '~> 0.1.0'
 ```
 
 or simply install via Ruby Gems
