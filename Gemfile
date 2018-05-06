@@ -1,13 +1,12 @@
 # A sample Gemfile
 source "https://rubygems.org"
 
-gem 'activesupport', '~> 4.0'
-gem 'activerecord', '~> 4.0.0'
+gem 'activesupport', '~> 5'
+gem 'activerecord', '~> 5'
 
 group :test do
   gem 'rake'
   gem 'sqlite3'
-  gem 'active_record_tasks', '~> 1.1.0'
+  gem 'active_record_tasks'
   gem 'rspec'
-  gem 'codeclimate-test-reporter', require: false
 end
