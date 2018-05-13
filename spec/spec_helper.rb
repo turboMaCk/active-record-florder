@@ -1,6 +1,3 @@
-require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
-
 ENV['RUBY_ENV'] ||= 'test'
 require 'active_record_florder'
 require 'active_record'
@@ -11,7 +8,6 @@ require 'support/base_test'
 require 'support/class_methods_test'
 require 'support/retyping_test'
 require 'active_record_florder'
-require "codeclimate-test-reporter"
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
