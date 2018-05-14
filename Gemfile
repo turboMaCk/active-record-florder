@@ -9,5 +9,4 @@ group :test do
   gem 'sqlite3'
   gem 'active_record_tasks', '~> 1.1.0'
   gem 'rspec'
-  gem 'codeclimate-test-reporter', require: false
 end
