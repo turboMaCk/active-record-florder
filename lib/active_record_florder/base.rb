@@ -104,6 +104,8 @@ module ActiveRecordFlorder
       min = new_position - min_position_delta
       max = new_position + min_position_delta
 
+      quoted_table_name = self.class.quoted_table_name
+
       self.class.position_scope(scope_value)
         .where("#{quoted_table_name}.#{position_attr_name} > ? AND #{quoted_table_name}.#{position_attr_name} < ?", max, min).each do |conflict|
           c.slide(direction)
