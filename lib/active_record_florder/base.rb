@@ -27,13 +27,13 @@ module ActiveRecordFlorder
       # @api public
       scope :ordered, lambda {
         direction = florder_direction.to_sym == :desc ? 'DESC' : 'ASC'
-        order("#{position_attr_name} #{direction}")
+        order("#{quoted_table_name}.#{position_attr_name} #{direction}")
       }
 
       # Generates optimal positions, do not affect order
       # @api public
       def self.reinit_positions
-        all.order("#{position_attr_name} ASC").each_with_index do |model, index|
+        all.order("#{quoted_table_name}.#{position_attr_name} ASC").each_with_index do |model, index|
           model.update_attribute(position_attr_name.to_sym, (index + 1) * next_position_step)
         end
       end
@@ -105,7 +105,7 @@ module ActiveRecordFlorder
       max = new_position + min_position_delta
 
       self.class.position_scope(scope_value)
-        .where("#{position_attr_name} > ? AND #{position_attr_name} < ?", max, min).each do |conflict|
+        .where("#{quoted_table_name}.#{position_attr_name} > ? AND #{quoted_table_name}.#{position_attr_name} < ?", max, min).each do |conflict|
           c.slide(direction)
         end
 
@@ -155,8 +155,10 @@ module ActiveRecordFlorder
       min = normalized_position - min_position_delta
       max = normalized_position + min_position_delta
 
+      quoted_table_name = self.class.quoted_table_name
+
       conflicts = self.class.position_scope(scope_value)
-                  .where("#{position_attr_name} > ? AND #{position_attr_name} < ?", min, max)
+                  .where("#{quoted_table_name}.#{position_attr_name} > ? AND #{quoted_table_name}.#{position_attr_name} < ?", min, max)
                   .where.not(id: id)
                   .order(:position)
 
@@ -199,21 +201,23 @@ module ActiveRecordFlorder
     # @param vector [:increase, :decrease, :highest, :lowest]
     # @returns Array
     def get_siblings_conditions(vector)
+      quoted_table_name = self.class.quoted_table_name
+
       case vector
       when :increase
-        [["#{position_attr_name} > ?",
+        [["#{quoted_table_name}.#{position_attr_name} > ?",
           send(position_attr_name.to_sym)],
-         "#{position_attr_name} DESC"]
+         "#{quoted_table_name}.#{position_attr_name} DESC"]
       when :decrease
-        [["#{position_attr_name} < ?",
+        [["#{quoted_table_name}.#{position_attr_name} < ?",
           send(position_attr_name.to_sym)],
-         "#{position_attr_name} ASC"]
+         "#{quoted_table_name}.#{position_attr_name} ASC"]
       when :highest
         [nil,
-         "#{position_attr_name} DESC"]
+         "#{quoted_table_name}.#{position_attr_name} DESC"]
       when :lowest
         [nil,
-         "#{position_attr_name} ASC"]
+         "#{quoted_table_name}.#{position_attr_name} ASC"]
       else
         error_message = "Place param '#{place}' is not one of: increase, decrease, highest, lowest."
         fail ActiveRecordFlorder::Error, error_message
