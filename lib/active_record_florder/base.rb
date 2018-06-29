@@ -44,11 +44,15 @@ module ActiveRecordFlorder
     # @returns self {ModelInstance}
     # @api public
     def move(position)
-      position = position.to_f
+      begin
+        position = Float(position)
+      rescue ArgumentError, TypeError
+        raise ActiveRecordFlorder::Error, 'The position param requires only numbers'
+      end
 
-      fail ActiveRecordFlorder::Error, 'Position param is required' unless position
-      fail ActiveRecordFlorder::Error, 'Position should be > 0' unless (normalized_position = normalize_position(position)) > 0
       normalized_position = normalize_position(position)
+
+      raise ActiveRecordFlorder::Error, 'The position should be > 0' if normalize_position <= 0
 
       affected = ensure_position_solving(position, normalized_position)
 
