@@ -31,30 +31,13 @@ module ActiveRecordFlorder
       end
     end
 
-    # All instance methods are just proxy
-    # To Class Methods
-    def florder_direction
-      self.class.florder_direction
-    end
-
-    def position_attr_name
-      self.class.position_attr_name
-    end
-
-    def position_scope_attr
-      self.class.position_scope_attr
-    end
-
-    def min_position_delta
-      self.class.min_position_delta
-    end
-
-    def next_position_step
-      self.class.next_position_step
-    end
-
-    def return_all_affected_by_move
-      self.class.return_all_affected_by_move
-    end
+    # All instance methods are delegated to their class methods
+    delegate :florder_direction,
+             :position_attr_name,
+             :position_scope_attr,
+             :min_position_delta,
+             :next_position_step,
+             :return_all_affected_by_move,
+             to: :class
   end
 end
