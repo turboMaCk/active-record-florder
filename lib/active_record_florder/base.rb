@@ -52,7 +52,7 @@ module ActiveRecordFlorder
 
       normalized_position = normalize_position(position)
 
-      raise ActiveRecordFlorder::Error, 'The position should be > 0' if normalize_position <= 0
+      raise ActiveRecordFlorder::Error, 'The position should be > 0' if normalized_position <= 0
 
       affected = ensure_position_solving(position, normalized_position)
 
